@@ -491,48 +491,36 @@ namespace UsersManager.Models
             int ratingsCount = 0;
             double ratingsTotal = 0;
             foreach (PhotoRating photoRating in photo.PhotoRatings)
-
             {
                 if (!photoRating.User.Blocked)
-
                 {
                     ratingsCount++;
                     ratingsTotal += photoRating.Rating;
-
                 }
-
             }
             if (ratingsCount > 0)
-
             {
                 photo.Ratings = ratingsTotal / ratingsCount;
                 photo.RatingsCount = ratingsCount;
-
             }
             else
-
             {
                 photo.Ratings = 0;
                 photo.RatingsCount = 0;
-
             }
             DB.Entry(photo).State = EntityState.Modified;
             DB.SaveChanges();
-            return true
-           ;
+            return true;
         }
         public static bool Update_Photo_Ratings(this UsersDBEntities DB)
         {
             BeginTransaction(DB);
             foreach (Photo photo in DB.Photos)
-
             {
                 DB.CompilePhotoRating(photo);
-
             }
             Commit();
-            return true
-           ;
+            return true;
         }
 
         public static bool Remove_Photo(this UsersDBEntities DB, int PhotoId)
@@ -568,7 +556,5 @@ namespace UsersManager.Models
             DB.SaveChanges();
             return photoRating;
         }
-
-
     }
 }

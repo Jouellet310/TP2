@@ -132,6 +132,7 @@
     <Compile Include="Controllers\FriendShipsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
+    <Compile Include="Controllers\PhotosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -305,6 +306,11 @@
     <Content Include="Views\Accounts\GetLoginsList.cshtml" />
     <Content Include="Views\FriendShips\Index.cshtml" />
     <Content Include="Views\FriendShips\GetFriendShipsStatus.cshtml" />
+    <Content Include="Views\Photos\Details.cshtml" />
+    <Content Include="Views\Photos\GetPhotoDetails.cshtml" />
+    <Content Include="Views\Photos\Create.cshtml" />
+    <Content Include="Views\Photos\Edit.cshtml" />
+    <Content Include="Views\Photos\PhotoForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

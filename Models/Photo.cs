@@ -15,46 +15,45 @@ namespace UsersManager.Models
 using System;
     using System.Collections.Generic;
     
-public partial class Photo
-{
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public Photo()
+    public partial class Photo
     {
 
-        this.PhotoRatings = new HashSet<PhotoRating>();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Photo()
+        {
+
+            this.PhotoRatings = new HashSet<PhotoRating>();
+
+        }
+
+        public int Id { get; set; }
+
+        public int UserId { get; set; }
+
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+
+        public int VisibilityId { get; set; }
+
+        public string GUID { get; set; }
+
+        public System.DateTime CreationDate { get; set; }
+
+        public double Ratings { get; set; }
+
+        public Nullable<int> RatingsCount { get; set; }
+
+
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+        public virtual ICollection<PhotoRating> PhotoRatings { get; set; }
+
+        public virtual User User { get; set; }
+
+        public virtual PhotoVisibility PhotoVisibility { get; set; }
 
     }
-
-
-    public int Id { get; set; }
-
-    public int UserId { get; set; }
-
-    public string Title { get; set; }
-
-    public string Description { get; set; }
-
-    public int VisibilityId { get; set; }
-
-    public string GUID { get; set; }
-
-    public System.DateTime CreationDate { get; set; }
-
-    public double Ratings { get; set; }
-
-    public Nullable<int> RatingsCount { get; set; }
-
-
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
-    public virtual ICollection<PhotoRating> PhotoRatings { get; set; }
-
-    public virtual User User { get; set; }
-
-    public virtual PhotoVisibility PhotoVisibility { get; set; }
-
-}
 
 }

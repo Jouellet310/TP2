@@ -8,18 +8,14 @@
         this.refresh(true);
         setInterval(() => { this.refresh() }, this.refreshRate);
     }
-
     pause() { this.paused = true }
-
     restart() { this.paused = false }
-
     replaceContent(htmlContent) {
         if (htmlContent !== "") {
             $("#" + this.container).html(htmlContent);
             if (this.callback != null) this.callback();
         }
     }
-
     refresh(forced = false) {
         if (!this.paused) {
             $.ajax({
@@ -29,7 +25,6 @@
             })
         }
     }
-
     command(url) {
         $.ajax({
             url: url,
@@ -37,7 +32,6 @@
             success: () => { this.refresh(true) }
         });
     }
-
     confirmedCommand(message, url) {
         bootbox.confirm(message, (result) => { this.command(url) });
     }
