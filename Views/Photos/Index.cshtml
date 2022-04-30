@@ -1,0 +1,33 @@
+﻿@model IEnumerable<UsersManager.Models.Photo>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+
+<span>@Helper.GlyphiconAction("Create", "plus", "Ajouter une photo")&nbsp;Ajouter une photo</span>
+
+
+<div id="photosContainer" class="photosContainer">
+    <!-- Peridocally refreshed -->
+    @{ Html.RenderAction("GetPhotos", new { forceRefresh = true }); }
+</div>
+<br />
+<br />
+
+@section Scripts { @Scripts.Render("~/bundles/jqueryval") @Scripts.Render("~/bundles/partialRefresh")
+<script defer>
+    let partialRefresh = new PartialRefresh("@Url.Action("ActionName")", "photosContainer", 5, postRefreshCallback);
+    function postRefreshCallback() { }
+
+    // Peut être pas nécessaire                                            // À changer
+    $("#commandButtonId").click(function () { let url = @Url.Action("/") + "ActionName?param1=value&param2=value…";
+        partialRefresh.command(url);
+    });
+
+</script> }
+
+
+
