@@ -17,20 +17,6 @@ using System;
     
 public partial class User
 {
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public User()
-    {
-
-        this.Logins = new HashSet<Login>();
-
-        this.PhotoRatings = new HashSet<PhotoRating>();
-
-        this.Photos = new HashSet<Photo>();
-
-    }
-
-
     public int Id { get; set; }
 
     public int UserTypeId { get; set; }
