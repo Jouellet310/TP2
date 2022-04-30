@@ -236,3 +236,38 @@
     <div class="rating" ratingId="@id" value="@roundedValue.ToString()" locked="@readOnly.ToString()" scale=@scale.ToString()></div>
 }
 
+@helper PhotoBig(UsersManager.Models.Photo photo)
+{
+    var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
+    var imageUrl = Url.Content(photo.GetUrl(false));
+    <div>
+        <a href="@imageUrl" target="_blank">
+            <div class="photoBig"
+                 style="background: url(@imageUrl) no-repeat center center;
+                 background-size: cover;">
+            </div>
+        </a>
+    </div>
+}
+
+@helper Photo(UsersManager.Models.Photo photo)
+{
+    var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
+    var imageUrl = Url.Content(photo.GetUrl(true));
+    var detailActionUrl = Url.Action("Details/" + photo.Id.ToString(), "Photos");
+    int roundedRating = (int)Math.Round(photo.Ratings);
+    int length = Math.Min(photo.Description.Length, 36);
+    string descriptionSample = photo.Description.Substring(0, length) + "...";
+    <div>
+        <div class="ellipsis">@photo.Title</div>
+        <a href="@detailActionUrl">
+            <div class="photo"
+                 style="background: url(@imageUrl) no-repeat center center;
+                 background-size: cover;"
+                 title="@descriptionSample">
+            </div>
+
+            <div style="margin-top:4px" class="rating" ratingId="Rating_@photo.Id" value="@roundedRating.ToString()" locked="True" scale="1.5"></div>
+        </a>
+    </div>
+}
