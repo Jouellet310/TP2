@@ -329,6 +329,8 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ImagesData\Photos\" />
+    <Folder Include="ImagesData\Thumbnails\" />
     <Folder Include="Views\Users\" />
   </ItemGroup>
   <PropertyGroup>

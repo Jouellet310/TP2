@@ -12,9 +12,33 @@ namespace UsersManager.Controllers
         Models.UsersDBEntities DB = new Models.UsersDBEntities();
 
         // GET: Photos
+
+        public void RenewPhotosSerialNumber()
+        {
+            HttpRuntime.Cache["imagesSerialNumber"] = Guid.NewGuid().ToString();
+        }
+
+        public string GetPhotosSerialNumber()
+        {
+            if (HttpRuntime.Cache["imagesSerialNumber"] == null)
+            {
+                RenewPhotosSerialNumber();
+            }
+            return (string)HttpRuntime.Cache["imagesSerialNumber"];
+        }
+
+        public void SetLocalPhotosSerialNumber()
+        {
+            Session["imagesSerialNumber"] = GetPhotosSerialNumber();
+        }
+
+        public bool IsPhotosUpToDate()
+        {
+            return ((string)Session["imagesSerialNumber"] == (string)HttpRuntime.Cache["imagesSerialNumber"]);
+        }
         public ActionResult Index()
         {
-            /*set local photo serial number*/
+            SetLocalPhotosSerialNumber();
             return View();
         }
         public ActionResult Create()
@@ -29,7 +53,7 @@ namespace UsersManager.Controllers
             if (ModelState.IsValid)
             {
                 DB.Add_Photo(photo);
-                /*Renew photo serial number*/
+                RenewPhotosSerialNumber();
                 return RedirectToAction("Index");
             }
             ViewBag.Visibilities = SelectListItemConverter<PhotoVisibility>.Convert(DB.PhotoVisibilities.ToList());
@@ -39,6 +63,7 @@ namespace UsersManager.Controllers
 
         public PartialViewResult PhotoForm(Photo photo)
         {
+            SetLocalPhotosSerialNumber();
             return PartialView(photo);
         }
 
@@ -67,12 +92,19 @@ namespace UsersManager.Controllers
             if (ModelState.IsValid)
             {
                 DB.Update_Photo(photo);
-                /*Renew photo serial number*/
+                RenewPhotosSerialNumber();
                 return RedirectToAction("Index");
             }
             ViewBag.Visibilities = SelectListItemConverter<PhotoVisibility>.Convert(DB.PhotoVisibilities.ToList());
 
             return View(photo);
+        }
+
+        public ActionResult Delete(int id)
+        {
+            DB.Remove_Photo(id);
+            RenewPhotosSerialNumber();
+            return RedirectToAction("Index");
         }
     }
 }
