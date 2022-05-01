@@ -43,7 +43,7 @@ namespace UsersManager.Controllers
             return View();
         }
 
-        public ActionResult GetPhotos(bool forceRefresh = false, string sortBy = "calendar", char inverted = 'n')
+        public ActionResult GetPhotos(bool forceRefresh = false, string sortBy = "calendar", char inverted = 'n', string search = null)
         {
             if (forceRefresh || !IsPhotosUpToDate())
             {
@@ -66,6 +66,16 @@ namespace UsersManager.Controllers
 
                 if (inverted == 'y')
                     set = set.Reverse();
+
+                if (search != null)
+                {
+                    foreach (var searchWord in search.ToLower().Split(' '))
+                    {
+                        set = set.Where(ob => ob.Title.ToLower().Contains(search) 
+                        || ob.User.FirstName.ToLower().Contains(search)
+                        || ob.User.LastName.ToLower().Contains(search));
+                    }
+                }
 
                 SetLocalPhotosSerialNumber();
                 return PartialView("_PhotosList", set.ToList());
