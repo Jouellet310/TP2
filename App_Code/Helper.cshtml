@@ -1,16 +1,16 @@
 ﻿@helper ListToRadioButtonGroup(string name, System.Web.Mvc.SelectList options, int selectedValue)
 {foreach (System.Web.Mvc.SelectListItem option in options.Items)
-{
-    string id = name + "_" + option.Value;
+    {
+        string id = name + "_" + option.Value;
 
-    if (option.Value == selectedValue.ToString())
-    {
+        if (option.Value == selectedValue.ToString())
+        {
             <input type="radio" name="@name" class="@name" id="@id" value="@option.Value.ToString()" checked />
-    }
-    else
-    {
+        }
+        else
+        {
             <input type="radio" name="@name" class="@name" id="@id" value="@option.Value.ToString()" />
-    }
+        }
         <label for="@id" class="control-label">@option.Text</label> }
     <br />
 }
@@ -42,7 +42,7 @@
 
 @helper GlyphiconAction(string Action, string glyphiconClass, string TooltipMessage, string ToolTipPlacement = "bottom")
 {glyphiconClass += " glyphicon-active";
-var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
+    var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
     <a href="@Url.Action(Action)" style="text-decoration:none">
         <span class="glyphicon glyphiconStyle @glyphiconClass"
               title="@TooltipMessage"
@@ -53,10 +53,10 @@ var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContex
 
 @helper GlyphiconConfirmAction(string Action, string glyphiconClass, string TooltipMessage, string ToolTipPlacement = "bottom")
 {glyphiconClass += " glyphicon-active";
-//// http://bootboxjs.com/documentation.html#bb-confirm
-var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
-var root = Url.Action("/");
-var action = root + Action;
+    //// http://bootboxjs.com/documentation.html#bb-confirm
+    var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
+    var root = Url.Action("/");
+    var action = root + Action;
     <div onclick='bootbox.confirm("@TooltipMessage", function(result){ if (result) window.location = "@action"; })'>
         <span class="glyphicon glyphiconStyle @glyphiconClass"
               title="@TooltipMessage"
@@ -67,10 +67,10 @@ var action = root + Action;
 
 @helper GlyphiconConfirmCommand(string url, string method, string glyphiconClass, string TooltipMessage, string ToolTipPlacement = "bottom")
 {
-var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
-url = Url.Action("/") + url;
-glyphiconClass += " glyphicon-active";
-string javascript = "function(result) { if (result) " + method + "('" + url + "') }";
+    var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
+    url = Url.Action("/") + url;
+    glyphiconClass += " glyphicon-active";
+    string javascript = "function(result) { if (result) " + method + "('" + url + "') }";
     <div onclick='bootbox.confirm("@TooltipMessage", @javascript)'>
         <span class="glyphicon glyphiconStyle @glyphiconClass"
               title="@TooltipMessage"
@@ -82,10 +82,10 @@ string javascript = "function(result) { if (result) " + method + "('" + url + "'
 
 @helper BoolToValue(bool b, string falseText = "non", string trueText = "oui")
 {if (b)
-{
+    {
         @trueText }
-else
-{
+    else
+    {
         @falseText}
 }
 
@@ -96,32 +96,32 @@ else
 
 @helper When(DateTime date)
 {TimeSpan span = DateTime.Now.Subtract(date);
-if (span.Days > 0)
-{
+    if (span.Days > 0)
+    {
         <div style="float:left">Le @date.ToLongDateString()&nbsp;</div>
         <div class="glyphicon glyphicon-time smallGlyphicon" title="@date.ToShortTimeString()" data-placement="right"></div> }
-else
-{
-    if (span.Hours > 1)
-    {
-            <span>Il y a @span.Hours heures</span> }
     else
     {
-        if (span.Minutes > 1)
+        if (span.Hours > 1)
         {
-                <span>Il y a @span.Minutes minutes</span> }
+            <span>Il y a @span.Hours heures</span> }
         else
         {
+            if (span.Minutes > 1)
+            {
+                <span>Il y a @span.Minutes minutes</span> }
+            else
+            {
                 <span>à l'instant</span>}
+        }
     }
-}
 }
 
 @helper ImageUploader(int id, string imageSrc, string controlId = "ImageControl", string waitingImage = "", string TooltipMessage = "", string ToolTipPlacement = "bottom")
 {var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
-imageSrc = Url.Content(imageSrc);
-controlId = Url.Content(controlId);
-waitingImage = Url.Content(waitingImage);
+    imageSrc = Url.Content(imageSrc);
+    controlId = Url.Content(controlId);
+    waitingImage = Url.Content(waitingImage);
     <div class='imageUploader' id='@id' controlId='@controlId' imageSrc='@imageSrc' waitingImage='@waitingImage'
          data-toggle="tooltip"
          data-placement="@ToolTipPlacement"
@@ -131,8 +131,8 @@ waitingImage = Url.Content(waitingImage);
 
 @helper AvatarProfilLink(UsersManager.Models.User user)
 {var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
-var avatarUrl = Url.Content(user.GetAvatarURL());
-var linkUrl = Url.Action("Profil", "Accounts");
+    var avatarUrl = Url.Content(user.GetAvatarURL());
+    var linkUrl = Url.Action("Profil", "Accounts");
     <a href="@linkUrl" data-toogle="tooltip" title="Modifier le profil">
         <div class="smallAvatar"
              style="background: url(@avatarUrl) no-repeat center center; background-size: cover;"></div>
@@ -142,7 +142,7 @@ var linkUrl = Url.Action("Profil", "Accounts");
 
 @helper AvatarUser(UsersManager.Models.User user)
 {var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
-var avatarUrl = Url.Content(user.GetAvatarURL());
+    var avatarUrl = Url.Content(user.GetAvatarURL());
     <div>
         <div class="smallAvatar"
              style="background: url(@avatarUrl) no-repeat center center; background-size: cover; float:left;"></div>
@@ -174,72 +174,73 @@ var avatarUrl = Url.Content(user.GetAvatarURL());
 
 @helper OnLineStatusIcon(bool onLine, bool blocked = false)
 {var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
-var icon = (onLine ? "~/Content/UI-icons/OnLine.png" : "~/Content/UI-icons/OffLine.png");
-if (blocked)
-{
-    icon = (onLine ? "~/Content/UI-icons/OnLine.png" : "~/Content/UI-icons/Masked.png");
-}
+    var icon = (onLine ? "~/Content/UI-icons/OnLine.png" : "~/Content/UI-icons/OffLine.png");
+    if (blocked)
+    {
+        icon = (onLine ? "~/Content/UI-icons/OnLine.png" : "~/Content/UI-icons/Masked.png");
+    }
 
-var iconUrl = Url.Content(icon);
+    var iconUrl = Url.Content(icon);
     <img src="@iconUrl" class="small_icon" />
 }
 
 @helper TimeOutIcon()
 {var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
 
-var iconUrl = Url.Content("~/Content/UI-icons/timeout.png");
+    var iconUrl = Url.Content("~/Content/UI-icons/timeout.png");
     <img src="@iconUrl" class="small_icon" />
 }
 
 @helper Checked(bool checkStatus)
 {var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
-if (checkStatus)
-{
+    if (checkStatus)
+    {
         <img src="@Url.Content("~/Content/UI-icons/Accept.png")" class="small_icon" />
-}
-else
-{
+    }
+    else
+    {
         <div></div>}
 }
 
 @helper UserTypeIcon(int genderId)
 {var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
-var icon = "";
-var tooltip = "";
-switch (genderId)
-{
-    case 1: icon = "~/Content/UI-icons/admin.png"; tooltip = "Administrateur"; break;
-    case 2: icon = "~/Content/UI-icons/power user.png"; tooltip = "Usager prévilégié"; break;
-    default: icon = "~/Content/UI-icons/user.png"; tooltip = "Usager standard"; break;
-}
+    var icon = "";
+    var tooltip = "";
+    switch (genderId)
+    {
+        case 1: icon = "~/Content/UI-icons/admin.png"; tooltip = "Administrateur"; break;
+        case 2: icon = "~/Content/UI-icons/power user.png"; tooltip = "Usager prévilégié"; break;
+        default: icon = "~/Content/UI-icons/user.png"; tooltip = "Usager standard"; break;
+    }
 
-var iconUrl = Url.Content(icon);
+    var iconUrl = Url.Content(icon);
     <img src="@iconUrl" class="medium_icon" title="@tooltip" />
 }
 
 @helper GenderIcon(int genderId)
 {var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
-var icon = "";
-switch (genderId)
-{
-    case 1: icon = "~/Content/UI-icons/male.png"; break;
-    case 2: icon = "~/Content/UI-icons/female.png"; break;
-    default: icon = "~/Content/UI-icons/neutral.png"; break;
-}
+    var icon = "";
+    switch (genderId)
+    {
+        case 1: icon = "~/Content/UI-icons/male.png"; break;
+        case 2: icon = "~/Content/UI-icons/female.png"; break;
+        default: icon = "~/Content/UI-icons/neutral.png"; break;
+    }
 
-var iconUrl = Url.Content(icon);
+    var iconUrl = Url.Content(icon);
     <img src="@iconUrl" class="small_icon" />
 }
 
 @helper Rating(string id, double value, bool readOnly = false, double scale = 2)
-{int roundedValue = (int)Math.Round(value);
+{
+    int roundedValue = (int)Math.Round(value);
     <div class="rating" ratingId="@id" value="@roundedValue.ToString()" locked="@readOnly.ToString()" scale=@scale.ToString()></div>
 }
 
 @helper PhotoBig(UsersManager.Models.Photo photo)
 {
-var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
-var imageUrl = Url.Content(photo.GetUrl(false));
+    var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
+    var imageUrl = Url.Content(photo.GetUrl(false));
     <div>
         <a href="@imageUrl" target="_blank">
             <div class="photoBig"
@@ -252,15 +253,18 @@ var imageUrl = Url.Content(photo.GetUrl(false));
 
 @helper Photo(UsersManager.Models.Photo photo)
 {
-var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
-var imageUrl = Url.Content(photo.GetUrl(true));
-var detailActionUrl = Url.Action("Details/" + photo.Id.ToString(), "Photos");
-int roundedRating = (int)Math.Round(photo.Ratings);
-int length = Math.Min(photo.Description.Length, 36);
-string descriptionSample = photo.Description.Substring(0, length) + "...";
+    var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
+    var imageUrl = Url.Content(photo.GetUrl(true));
+    var detailActionUrl = Url.Action("Details/" + photo.Id.ToString(), "Photos");
+    int roundedRating = (int)Math.Round(photo.Ratings);
+    int lengthTitle = Math.Min(photo.Title.Length, 20);
+    string titleSample = photo.Title.Substring(0, lengthTitle) + "...";
+    int length = Math.Min(photo.Description.Length, 36);
+    string descriptionSample = photo.Description.Substring(0, length) + "...";
+
     <div>
         <div class="ellipsis">
-            <b>@photo.Title</b>
+            <b>@titleSample</b>
         </div>
         <a href="@detailActionUrl">
             <div class="photo"
@@ -274,7 +278,7 @@ string descriptionSample = photo.Description.Substring(0, length) + "...";
     </div>
 }
 
-@helper GenerateSortButtons(IEnumerable<UsersManager.Buttons.SortButtons> buttons) 
+@helper GenerateSortButtons(IEnumerable<UsersManager.Buttons.SortButtons> buttons)
 {
     foreach (var button in buttons)
     {

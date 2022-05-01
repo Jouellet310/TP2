@@ -46,7 +46,7 @@
 
 <br />
 
-<div id="photosContainer" class="photosContainer">
+<div id="photosContainer" class="photosContainerGrid">
     <!-- Peridocally refreshed -->
     @{
         Html.RenderAction("GetPhotos", new { forceRefresh = true });
@@ -54,10 +54,61 @@
 </div>
 
 
-@section Scripts { @Scripts.Render("~/bundles/jqueryval") @Scripts.Render("~/bundles/partialRefresh")
+@section Scripts { 
+    @Scripts.Render("~/bundles/jqueryval") 
+    @Scripts.Render("~/bundles/partialRefresh")
+
 <script defer>
-    let partialRefresh = new PartialRefresh("@Url.Action("GetPhotos")", "photosContainer", 5, postRefreshCallback);
-    let currentSelected = "calendar";
+    class PartialRefreshSettings {
+        constructor(url, container, time, callback) {
+            this.baseUrl = url;
+
+            this.container = container;
+            this.time = time;
+            this.callback = callback;
+
+            this.partialRefresh = new PartialRefresh(url, container, time, callback);
+            this.arguments = {};
+        }
+
+        updateRefresh() {
+            clearInterval(this.partialRefresh.interval); // clear refresh interval
+            this.partialRefresh = new PartialRefresh(this.baseUrl + this.getArguments(), this.container, this.time, this.callback);
+            this.partialRefresh.refresh();
+        }
+
+        editArgument(key, value) {
+            if (key == undefined || value == undefined)
+                return false;
+            this.arguments[key] = value;
+
+            return true;
+        }
+
+        getArgument(key) {
+            return this.arguments[key];
+        }
+
+        removeArgument(key) {
+            delete this.arguments[key];
+            return true;
+        }
+
+        getArguments() {
+            let res = jQuery.isEmptyObject(this.arguments) ? "" : "?";
+            Object.keys(this.arguments).forEach(key => {
+                if (res.length != 1) res += "&"
+                res += `${key}=${this.arguments[key]}`;
+            });
+
+            return res;
+        }
+    }
+
+    let partialRefreshSettings = new PartialRefreshSettings("@Url.Action("GetPhotos")", "photosContainer", 5, postRefreshCallback);
+
+    partialRefreshSettings.editArgument("sortBy", "calendar");
+    partialRefreshSettings.editArgument("inverted", "n");
 
     function postRefreshCallback() {
         console.log("Refreshed the page!");
@@ -66,21 +117,31 @@
 
     // attach sortButtons callback
     $("#sortButtons").children().each(function (index) {
-
-        if (currentSelected == this.id)
+        let currentSelected = partialRefreshSettings.getArgument("sortBy");
+            
+        if (currentSelected == this.id) // toggle css for the selected sort button
             $(`#${this.id} span`).toggleClass("glyphSelected");
 
         $(this).click(function () {
-            $("#sortButtons > a > span").removeClass("glyphSelected");
+            let currentSelected = partialRefreshSettings.getArgument("sortBy");
+            let invert = partialRefreshSettings.getArgument("inverted") == 'y' ? true : false;
 
-            $(`#${this.id} span`).toggleClass("glyphSelected");
+            $("#sortButtons > a > span").removeClass("glyphSelected"); // reset css classes for all the sort buttons
+            $(`#${this.id} span`).toggleClass("glyphSelected"); // set selected glyphIcon css class
 
-            currentSelected = this.id;
+            if (currentSelected == this.id) { // if we clicked on the same icon twice
+                invert = !invert; // toggle invert
+                partialRefreshSettings.editArgument("inverted", invert ? 'y' : 'n'); // edit inverted parameter inside settings
+            }
+            else {
+                partialRefreshSettings.removeArgument("inverted"); // reset invert sort
+                currentSelected = this.id; // if first time clicking on it, set currentSelected
+            }
 
-            clearInterval(partialRefresh.interval);
+            console.log(partialRefreshSettings.baseUrl + partialRefreshSettings.getArguments());
 
-            partialRefresh = new PartialRefresh(`@Url.Action("GetPhotos")?sortBy=${this.id}`, "photosContainer", 5, postRefreshCallback);
-            partialRefresh.refresh();
+            partialRefreshSettings.editArgument("sortBy", currentSelected);
+            partialRefreshSettings.updateRefresh();
         });
     });
 

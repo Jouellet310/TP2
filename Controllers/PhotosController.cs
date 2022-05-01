@@ -43,29 +43,32 @@ namespace UsersManager.Controllers
             return View();
         }
 
-        public ActionResult GetPhotos(bool forceRefresh = false, string sortBy = "calendar")
+        public ActionResult GetPhotos(bool forceRefresh = false, string sortBy = "calendar", char inverted = 'n')
         {
             if (forceRefresh || !IsPhotosUpToDate())
             {
-                // define the set to use based on the sorting the user wants
+                // define the data set to use based on the sorting the user wants
                 IEnumerable<Photo> set;
                 switch (sortBy)
                 {
                     case "evaluation":
-                        set = DB.Photos.OrderBy(ob => ob.Ratings).ToList();
+                        set = DB.Photos.OrderBy(ob => ob.Ratings);
                         break;
 
                     case "author":
-                        set = DB.Photos.OrderBy(ob => ob.User.FirstName).ThenBy(ob => ob.User.LastName).ToList();
+                        set = DB.Photos.OrderBy(ob => ob.User.FirstName).ThenBy(ob => ob.User.LastName);
                         break;
 
                     default:
-                        set = DB.Photos.OrderBy(ob => ob.CreationDate).ToList();
+                        set = DB.Photos.OrderByDescending(ob => ob.CreationDate);
                         break;
                 }
 
+                if (inverted == 'y')
+                    set = set.Reverse();
+
                 SetLocalPhotosSerialNumber();
-                return PartialView("_PhotosList", set);
+                return PartialView("_PhotosList", set.ToList());
             }
             return null;
         }
