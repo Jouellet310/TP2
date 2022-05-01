@@ -121,7 +121,9 @@
                             PhotoRatings = Model.PhotoRatings.OrderByDescending(pr => pr.Rating);
                         }
                         break;
-                    default: break;
+                    default:
+                        PhotoRatings = Model.PhotoRatings;
+                        break;
                 }
                 foreach (UsersManager.Models.PhotoRating photoRating in PhotoRatings)
                 {

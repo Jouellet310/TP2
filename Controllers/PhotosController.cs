@@ -115,7 +115,7 @@ namespace UsersManager.Controllers
             Photo photo = DB.Photos.Find(photoId);
             if (photo != null)
             {
-                return View("Details", photo);
+                return View("GetPhotoDetails", photo);
             }
             return RedirectToAction("Index");
         }
