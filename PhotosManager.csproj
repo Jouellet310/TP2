@@ -136,6 +136,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Buttons.cs" />
     <Compile Include="Models\Photo.cs">
       <DependentUpon>UsersDBEntities.tt</DependentUpon>
     </Compile>
@@ -314,6 +315,7 @@
     <Content Include="Views\Photos\PhotoForm.cshtml" />
     <Content Include="Views\Photos\Index.cshtml" />
     <Content Include="Views\Photos\GetPhotos.cshtml" />
+    <Content Include="Views\Photos\_PhotosList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

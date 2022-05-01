@@ -6,15 +6,16 @@
         this.refreshRate = refreshRate * 1000;
         this.paused = false;
         this.refresh(true);
-        setInterval(() => { this.refresh() }, this.refreshRate);
+        this.interval = setInterval(() => { this.refresh() }, this.refreshRate);
     }
     pause() { this.paused = true }
     restart() { this.paused = false }
     replaceContent(htmlContent) {
         if (htmlContent !== "") {
             $("#" + this.container).html(htmlContent);
-            if (this.callback != null) this.callback();
         }
+
+        if (this.callback != null) this.callback();
     }
     refresh(forced = false) {
         if (!this.paused) {

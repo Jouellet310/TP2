@@ -1,45 +1,91 @@
-﻿@model IEnumerable<UsersManager.Models.Photo>
-
+﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Répertoire";
+    IEnumerable<UsersManager.Buttons.SortButtons> sortButtons = new List<UsersManager.Buttons.SortButtons>
+    {
+        new UsersManager.Buttons.SortButtons
+        {
+            Description = "Ordonner par date",
+            GlyphiconClass = "glyphicon-calendar",
+            Value = "calendar"
+        },
+        new UsersManager.Buttons.SortButtons
+        {
+            Description = "Ordonner par auteur",
+            GlyphiconClass = "glyphicon-user",
+            Value = "author"
+        },
+        new UsersManager.Buttons.SortButtons
+        {
+            Description = "Ordonner par évaluation",
+            GlyphiconClass = "glyphicon-star",
+            Value = "evaluation"
+        },
+    };
+
 }
 
-<h2>Index</h2>
+<h2>Répertoire de photos</h2>
 
 
-<span>@Helper.GlyphiconAction("Create", "plus", "Ajouter une photo")&nbsp;Ajouter une photo</span>
+<div id="parameterContainer" class="container">
+    <div class="row">
+        <div class="col-sm-5 col-md-2">
+            @Helper.GlyphiconAction("Create", "glyphicon-plus", "Ajouter une photos")
+        </div>
 
+        <div id="searchBar" class="col-sm-5 col-md-5">
+
+        </div>
+
+        <div id="sortButtons" class="col-sm-5 col-md-5">
+            @Helper.GenerateSortButtons(sortButtons) 
+        </div>
+    </div>
+</div>
+
+<br />
 
 <div id="photosContainer" class="photosContainer">
     <!-- Peridocally refreshed -->
-    @{ Html.RenderAction("GetPhotos", new { forceRefresh = true }); }
+    @{
+        Html.RenderAction("GetPhotos", new { forceRefresh = true });
+    }
 </div>
-<br />
-<br />
+
 
 @section Scripts { @Scripts.Render("~/bundles/jqueryval") @Scripts.Render("~/bundles/partialRefresh")
 <script defer>
-    let partialRefresh = new PartialRefresh("@Url.Action("ActionName")", "photosContainer", 5, postRefreshCallback);
-    function postRefreshCallback() { }
+    let partialRefresh = new PartialRefresh("@Url.Action("GetPhotos")", "photosContainer", 5, postRefreshCallback);
+    let currentSelected = "calendar";
 
-    // Peut être pas nécessaire                                            // À changer
-    $("#commandButtonId").click(function () { let url = @Url.Action("/") + "ActionName?param1=value&param2=value…";
-        partialRefresh.command(url);
+    function postRefreshCallback() {
+        console.log("Refreshed the page!");
+    }
+
+
+    // attach sortButtons callback
+    $("#sortButtons").children().each(function (index) {
+
+        if (currentSelected == this.id)
+            $(`#${this.id} span`).toggleClass("glyphSelected");
+
+        $(this).click(function () {
+            $("#sortButtons > a > span").removeClass("glyphSelected");
+
+            $(`#${this.id} span`).toggleClass("glyphSelected");
+
+            currentSelected = this.id;
+
+            clearInterval(partialRefresh.interval);
+
+            partialRefresh = new PartialRefresh(`@Url.Action("GetPhotos")?sortBy=${this.id}`, "photosContainer", 5, postRefreshCallback);
+            partialRefresh.refresh();
+        });
     });
 
 </script> }
 
 
 
-<div class="photosContainerGrid">
 
-    @foreach (var photo in Model)
-    {
-        <div class="photoContainer">
-            @Helper.AvatarUser(photo.User)
-            @Helper.Photo(photo)
-        </div>
-
-    }
-
-</div>

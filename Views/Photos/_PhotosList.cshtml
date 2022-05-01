@@ -1,0 +1,10 @@
+﻿@model IEnumerable<UsersManager.Models.Photo>
+
+@foreach (var photo in Model)
+{
+    <div class="photoContainer">
+        @Helper.AvatarUser(photo.User)
+        @Helper.Photo(photo)
+        @Helper.Rating(photo.Id.ToString(), photo.Ratings)
+    </div>
+}

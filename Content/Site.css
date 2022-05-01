@@ -113,12 +113,27 @@ legend {
     border: 2px solid white;
 }
 
-    .UploadedImage:hover {
-        border: 2px solid blue;
-    }
+.UploadedImage:hover {
+    border: 2px solid blue;
+}
+
 
 .glyphiconStyle {
-    font-size: 18px
+    color: black;
+    font-size: 18px;
+}
+
+.sortButton:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.glyphSelected {
+    color: dodgerblue;
+}
+
+.glyphiconStyle:hover {
+    color: dodgerblue;
 }
 
 .glyphicon-green {

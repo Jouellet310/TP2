@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -39,15 +40,32 @@ namespace UsersManager.Controllers
         public ActionResult Index()
         {
             SetLocalPhotosSerialNumber();
-            return View(DB.Photos);
+            return View();
         }
 
-        public ActionResult GetPhotos(bool forceRefresh = false)
+        public ActionResult GetPhotos(bool forceRefresh = false, string sortBy = "calendar")
         {
             if (forceRefresh || !IsPhotosUpToDate())
             {
+                // define the set to use based on the sorting the user wants
+                IEnumerable<Photo> set;
+                switch (sortBy)
+                {
+                    case "evaluation":
+                        set = DB.Photos.OrderBy(ob => ob.Ratings).ToList();
+                        break;
+
+                    case "author":
+                        set = DB.Photos.OrderBy(ob => ob.User.FirstName).ThenBy(ob => ob.User.LastName).ToList();
+                        break;
+
+                    default:
+                        set = DB.Photos.OrderBy(ob => ob.CreationDate).ToList();
+                        break;
+                }
+
                 SetLocalPhotosSerialNumber();
-                return PartialView("GetPhotos");
+                return PartialView("_PhotosList", set);
             }
             return null;
         }
