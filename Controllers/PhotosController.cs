@@ -41,6 +41,16 @@ namespace UsersManager.Controllers
             SetLocalPhotosSerialNumber();
             return View(DB.Photos);
         }
+
+        public ActionResult GetPhotos(bool forceRefresh = false)
+        {
+            if (forceRefresh || !IsPhotosUpToDate())
+            {
+                SetLocalPhotosSerialNumber();
+                return PartialView("GetPhotos");
+            }
+            return null;
+        }
         public ActionResult Create()
         {
             ViewBag.Visibilities = SelectListItemConverter<PhotoVisibility>.Convert(DB.PhotoVisibilities.ToList());
