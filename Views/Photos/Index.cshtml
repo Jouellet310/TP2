@@ -1,7 +1,20 @@
-﻿
+﻿@model IEnumerable<UsersManager.Models.Photo>
+
 @{
     ViewBag.Title = "Répertoire";
 }
 
 <h2>Répertoire de photos</h2>
 
+<div class="photosContainerGrid">
+
+    @foreach (var photo in Model)
+    {
+        <div class="photoContainer">
+            @Helper.AvatarUser(photo.User)
+            @Helper.Photo(photo)
+        </div>
+
+    }
+
+</div>

@@ -259,7 +259,7 @@
     int length = Math.Min(photo.Description.Length, 36);
     string descriptionSample = photo.Description.Substring(0, length) + "...";
     <div>
-        <div class="ellipsis">@photo.Title</div>
+        <div class="ellipsis"><b>@photo.Title</b></div>
         <a href="@detailActionUrl">
             <div class="photo"
                  style="background: url(@imageUrl) no-repeat center center;

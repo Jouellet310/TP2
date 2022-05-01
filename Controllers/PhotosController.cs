@@ -39,7 +39,7 @@ namespace UsersManager.Controllers
         public ActionResult Index()
         {
             SetLocalPhotosSerialNumber();
-            return View();
+            return View(DB.Photos);
         }
         public ActionResult Create()
         {
