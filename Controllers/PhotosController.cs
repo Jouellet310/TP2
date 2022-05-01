@@ -16,26 +16,26 @@ namespace UsersManager.Controllers
 
         public void RenewPhotosSerialNumber()
         {
-            HttpRuntime.Cache["imagesSerialNumber"] = Guid.NewGuid().ToString();
+            HttpRuntime.Cache["photosSerialNumber"] = Guid.NewGuid().ToString();
         }
 
         public string GetPhotosSerialNumber()
         {
-            if (HttpRuntime.Cache["imagesSerialNumber"] == null)
+            if (HttpRuntime.Cache["photosSerialNumber"] == null)
             {
                 RenewPhotosSerialNumber();
             }
-            return (string)HttpRuntime.Cache["imagesSerialNumber"];
+            return (string)HttpRuntime.Cache["photosSerialNumber"];
         }
 
         public void SetLocalPhotosSerialNumber()
         {
-            Session["imagesSerialNumber"] = GetPhotosSerialNumber();
+            Session["photosSerialNumber"] = GetPhotosSerialNumber();
         }
 
         public bool IsPhotosUpToDate()
         {
-            return ((string)Session["imagesSerialNumber"] == (string)HttpRuntime.Cache["imagesSerialNumber"]);
+            return ((string)Session["photosSerialNumber"] == (string)HttpRuntime.Cache["photosSerialNumber"]);
         }
         public ActionResult Index()
         {
@@ -72,6 +72,17 @@ namespace UsersManager.Controllers
             }
             return null;
         }
+
+        public ActionResult GetPhotoDetails(int photoId, bool forceRefresh = false)
+        {
+            if (forceRefresh || !IsPhotosUpToDate())
+            {
+                var photo = DB.Photos.Find(photoId);
+                SetLocalPhotosSerialNumber();
+                return PartialView("GetPhotoDetails", photo);
+            }
+            return null;
+        }
         public ActionResult Create()
         {
             ViewBag.Visibilities = SelectListItemConverter<PhotoVisibility>.Convert(DB.PhotoVisibilities.ToList());
@@ -95,18 +106,20 @@ namespace UsersManager.Controllers
         public PartialViewResult PhotoForm(Photo photo)
         {
             SetLocalPhotosSerialNumber();
-            return PartialView(photo);
+            return PartialView("PhotoForm", photo);
         }
 
-        public ActionResult Details(int id)
+        [HttpGet]
+        public ActionResult Details(int? photoId)
         {
-            Photo photo = DB.Photos.Find(id);
+            Photo photo = DB.Photos.Find(photoId);
             if (photo != null)
             {
-                return View(photo);
+                return View("Details", photo);
             }
             return RedirectToAction("Index");
         }
+
         public ActionResult Edit(int id)
         {
             Photo photo = DB.Photos.Find(id);
