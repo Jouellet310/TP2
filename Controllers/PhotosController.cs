@@ -43,7 +43,7 @@ namespace UsersManager.Controllers
             return View();
         }
 
-        public ActionResult GetPhotos(bool forceRefresh = false, string sortBy = "calendar", char inverted = 'n')
+        public ActionResult GetPhotos(bool forceRefresh = false, string sortBy = "calendar", char inverted = 'n', string search = null)
         {
             if (forceRefresh || !IsPhotosUpToDate())
             {
@@ -66,6 +66,30 @@ namespace UsersManager.Controllers
 
                 if (inverted == 'y')
                     set = set.Reverse();
+
+                if (search != null)
+                {
+                    foreach (var searchWord in search.ToLower().Split(' '))
+                    {
+                        set = set.Where(ob =>
+                            ob.Title.ToLower().Contains(search)
+                            || ob.User.FirstName.ToLower().Contains(search)
+                            || ob.User.LastName.ToLower().Contains(search)
+                        );
+                    }
+                }
+
+                int currUser = OnlineUsers.CurrentUserId;
+                if (currUser > 0)
+                {
+                    set = set.Where(ob =>
+                            ob.PhotoVisibility.Name == "public"
+                        || (ob.PhotoVisibility.Name == "private" && ob.User.Id == currUser)
+                        || (ob.PhotoVisibility.Name == "friends" && (ob.User.Id == currUser || UsersDBDAL.AreFriends(DB, ob.User.Id, currUser)))
+                    );
+                }
+                else
+                    set = set.Where(ob => ob.PhotoVisibility.Name == "public");
 
                 SetLocalPhotosSerialNumber();
                 return PartialView("_PhotosList", set.ToList());
