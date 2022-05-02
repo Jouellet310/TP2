@@ -494,7 +494,8 @@ namespace UsersManager.Models
             double ratingsTotal = 0;
             foreach (PhotoRating photoRating in photo.PhotoRatings)
             {
-                if (!photoRating.User.Blocked)
+                //if (!photoRating.User.Blocked)
+                if (!DB.Users.Where(user => user.Id == photoRating.UserId).First().Blocked)
                 {
                     ratingsCount++;
                     ratingsTotal += photoRating.Rating;
@@ -555,6 +556,17 @@ namespace UsersManager.Models
             {
                 photoRating = DB.PhotoRatings.Add(photoRating);
             }
+
+            PhotoRating toUpdate = existingPhotoRating == null ? photoRating : existingPhotoRating;
+
+            DB.Entry(toUpdate.Photo).State = EntityState.Modified;
+
+            double averageRating = Math.Round(toUpdate.Photo.PhotoRatings.Average(ob => ob.Rating));
+            int ratingCount = toUpdate.Photo.PhotoRatings.Count();
+
+            toUpdate.Photo.Ratings = averageRating;
+            toUpdate.Photo.RatingsCount = ratingCount;
+
             DB.SaveChanges();
             return photoRating;
         }

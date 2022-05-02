@@ -188,9 +188,15 @@ namespace UsersManager.Controllers
         }
         public ActionResult SortRatingsBy(string fieldToSort)
         {
-            Session["RatingFieldToSort"] = fieldToSort;
-            Session["RatingFieldSortDir"] = !(bool)Session["RatingFieldToSort"];
-            return View();
+            try
+            {
+                Session["RatingFieldToSort"] = fieldToSort;
+                Session["RatingFieldSortDir"] = !(bool)Session["RatingFieldToSort"];
+                return View();
+            } catch
+            {
+                return RedirectToAction("Index");
+            }
         }
     }
 }
