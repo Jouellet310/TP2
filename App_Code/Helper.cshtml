@@ -255,7 +255,7 @@
 {
     var Url = new System.Web.Mvc.UrlHelper(HttpContext.Current.Request.RequestContext);
     var imageUrl = Url.Content(photo.GetUrl(true));
-    var detailActionUrl = Url.Action("Details", "Photos", new { photoId = photo.Id });
+    var detailActionUrl = Url.Action("Details/" + photo.Id.ToString(), "Photos");
     int roundedRating = (int)Math.Round(photo.Ratings);
     int lengthTitle = Math.Min(photo.Title.Length, 20);
     string titleSample = photo.Title.Substring(0, lengthTitle) + "...";

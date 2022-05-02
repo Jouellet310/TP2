@@ -1,69 +1,69 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Répertoire";
-    IEnumerable<UsersManager.Buttons.SortButtons> sortButtons = new List<UsersManager.Buttons.SortButtons>
-    {
+    IEnumerable<UsersManager.Buttons.SortButtons>
+    sortButtons = new List<UsersManager.Buttons.SortButtons>
+        {
         new UsersManager.Buttons.SortButtons
         {
-            Description = "Ordonner par date",
-            GlyphiconClass = "glyphicon-calendar",
-            Value = "calendar"
+        Description = "Ordonner par date",
+        GlyphiconClass = "glyphicon-calendar",
+        Value = "calendar"
         },
         new UsersManager.Buttons.SortButtons
         {
-            Description = "Ordonner par auteur",
-            GlyphiconClass = "glyphicon-user",
-            Value = "author"
+        Description = "Ordonner par auteur",
+        GlyphiconClass = "glyphicon-user",
+        Value = "author"
         },
         new UsersManager.Buttons.SortButtons
         {
-            Description = "Ordonner par évaluation",
-            GlyphiconClass = "glyphicon-star",
-            Value = "evaluation"
+        Description = "Ordonner par évaluation",
+        GlyphiconClass = "glyphicon-star",
+        Value = "evaluation"
         },
-    };
+        };
 
 }
 
-<h2>Répertoire de photos</h2>
+        <h2>Répertoire de photos</h2>
 
 
-<div id="parameterContainer" class="container">
-    <div class="row">
-        <div class="col-sm-1 col-md-1">
-            @Helper.GlyphiconAction("Create", "glyphicon-plus", "Ajouter une photos")
+        <div id="parameterContainer" class="container">
+            <div class="row">
+                <div class="col-sm-1 col-md-1">
+                    @Helper.GlyphiconAction("Create", "glyphicon-plus", "Ajouter une photos")
+                </div>
+
+                <div id="searchBar" class="col-sm-5 col-md-5">
+                    <input type="text" value="" id="searchBarInput" placeholder="Entrer votre recherche ici..." />
+                    <a class="sortButton" id="searchBarButton">
+                        @Helper.GlyphiconNoAction("glyphicon-search", "Rechercher")
+                    </a>
+                </div>
+
+                <div id="sortButtons" class="col-sm-5 col-md-5">
+                    @Helper.GenerateSortButtons(sortButtons)
+                </div>
+            </div>
         </div>
 
-        <div id="searchBar" class="col-sm-5 col-md-5">
-            <input type="text" value="" id="searchBarInput" placeholder="Entrer votre recherche ici..." />
-            <a class="sortButton" id="searchBarButton">
-                @Helper.GlyphiconNoAction("glyphicon-search", "Rechercher")
-            </a>
+        <br />
+
+        <div id="photosContainer" class="photosContainerGrid">
+            <!-- Peridocally refreshed -->
+            @{
+            Html.RenderAction("GetPhotos", new { forceRefresh = true });
+            }
         </div>
 
-        <div id="sortButtons" class="col-sm-5 col-md-5">
-            @Helper.GenerateSortButtons(sortButtons) 
-        </div>
-    </div>
-</div>
 
-<br />
+        @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/partialRefresh")
 
-<div id="photosContainer" class="photosContainerGrid">
-    <!-- Peridocally refreshed -->
-    @{
-        Html.RenderAction("GetPhotos", new { forceRefresh = true });
-    }
-</div>
-
-
-@section Scripts { 
-    @Scripts.Render("~/bundles/jqueryval") 
-    @Scripts.Render("~/bundles/partialRefresh")
-
-<script defer>
-    class PartialRefreshSettings {
-        constructor(url, container, time, callback) {
+        <script defer>
+            class PartialRefreshSettings {
+            constructor(url, container, time, callback) {
             this.baseUrl = url;
 
             this.container = container;
@@ -72,71 +72,71 @@
 
             this.partialRefresh = new PartialRefresh(url, container, time, callback);
             this.arguments = {};
-        }
+            }
 
-        updateRefresh() {
+            updateRefresh() {
             clearInterval(this.partialRefresh.interval); // clear refresh interval
             this.partialRefresh = new PartialRefresh(this.baseUrl + this.getArguments(), this.container, this.time, this.callback);
             this.partialRefresh.refresh();
-        }
+            }
 
-        editArgument(key, value) {
+            editArgument(key, value) {
             if (key == undefined || value == undefined)
-                return false;
+            return false;
             this.arguments[key] = value;
 
             return true;
-        }
+            }
 
-        getArgument(key) {
+            getArgument(key) {
             return this.arguments[key];
-        }
+            }
 
-        removeArgument(key) {
+            removeArgument(key) {
             delete this.arguments[key];
             return true;
-        }
+            }
 
-        getArguments() {
+            getArguments() {
             let res = jQuery.isEmptyObject(this.arguments) ? "" : "?";
             Object.keys(this.arguments).forEach(key => {
-                if (res.length != 1) res += "&"
-                res += `${key}=${this.arguments[key]}`;
+            if (res.length != 1) res += "&"
+            res += `${key}=${this.arguments[key]}`;
             });
 
             return res;
-        }
-    }
+            }
+            }
 
-    let partialRefreshSettings = new PartialRefreshSettings("@Url.Action("GetPhotos")", "photosContainer", 5, postRefreshCallback);
+            let partialRefreshSettings = new PartialRefreshSettings("@Url.Action("GetPhotos")", "photosContainer", 5, postRefreshCallback);
 
-    partialRefreshSettings.editArgument("sortBy", "calendar");
-    partialRefreshSettings.editArgument("inverted", "n");
+            partialRefreshSettings.editArgument("sortBy", "calendar");
+            partialRefreshSettings.editArgument("inverted", "n");
 
-    function postRefreshCallback() {
-        console.log("Refreshed the page!");
-    }
+            function postRefreshCallback() {
+            console.log("Refreshed the page!");
+            }
 
-    // attach searchBarButton callback event
-    $("#searchBarButton").click(function () {
-        let searchBar = $("#searchBarInput");
-        let searchParam = searchBar.val();
+            // attach searchBarButton callback event
+            $("#searchBarButton").click(function () {
+            let searchBar = $("#searchBarInput");
+            let searchParam = searchBar.val();
 
-        searchBar.attr("placeholder", searchParam == "" ? "Entrer votre recherche ici..." : searchParam);
-        searchBar.val("");
+            searchBar.attr("placeholder", searchParam == "" ? "Entrer votre recherche ici..." : searchParam);
+            searchBar.val("");
 
-        partialRefreshSettings.editArgument("search", searchParam);
-        partialRefreshSettings.updateRefresh();
-    });
+            partialRefreshSettings.editArgument("search", searchParam);
+            partialRefreshSettings.updateRefresh();
+            });
 
-    // attach sortButtons callback
-    $("#sortButtons").children().each(function (index) {
-        let currentSelected = partialRefreshSettings.getArgument("sortBy");
-            
-        if (currentSelected == this.id) // toggle css for the selected sort button
+            // attach sortButtons callback
+            $("#sortButtons").children().each(function (index) {
+            let currentSelected = partialRefreshSettings.getArgument("sortBy");
+
+            if (currentSelected == this.id) // toggle css for the selected sort button
             $(`#${this.id} span`).toggleClass("glyphSelected");
 
-        $(this).click(function () {
+            $(this).click(function () {
             let currentSelected = partialRefreshSettings.getArgument("sortBy");
             let invert = partialRefreshSettings.getArgument("inverted") == 'y' ? true : false;
 
@@ -144,22 +144,22 @@
             $(`#${this.id} span`).toggleClass("glyphSelected"); // set selected glyphIcon css class
 
             if (currentSelected == this.id) { // if we clicked on the same icon twice
-                invert = !invert; // toggle invert
-                partialRefreshSettings.editArgument("inverted", invert ? 'y' : 'n'); // edit inverted parameter inside settings
+            invert = !invert; // toggle invert
+            partialRefreshSettings.editArgument("inverted", invert ? 'y' : 'n'); // edit inverted parameter inside settings
             }
             else {
-                partialRefreshSettings.removeArgument("inverted"); // reset invert sort
-                currentSelected = this.id; // if first time clicking on it, set currentSelected
+            partialRefreshSettings.removeArgument("inverted"); // reset invert sort
+            currentSelected = this.id; // if first time clicking on it, set currentSelected
             }
 
             console.log(partialRefreshSettings.baseUrl + partialRefreshSettings.getArguments());
 
             partialRefreshSettings.editArgument("sortBy", currentSelected);
             partialRefreshSettings.updateRefresh();
-        });
-    });
+            });
+            });
 
-</script> }
+        </script> }
 
 
 

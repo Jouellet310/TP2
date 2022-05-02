@@ -97,12 +97,6 @@ namespace UsersManager.Controllers
             return null;
         }
 
-        public ActionResult GetPhotoDetails(int photoId, bool forceRefresh = false)
-        {  
-                var photo = DB.Photos.Find(photoId);
-                SetLocalPhotosSerialNumber();
-                return View(photo);
-        }
         public ActionResult Create()
         {
             ViewBag.Visibilities = SelectListItemConverter<PhotoVisibility>.Convert(DB.PhotoVisibilities.ToList());
@@ -130,15 +124,18 @@ namespace UsersManager.Controllers
         }
 
         [HttpGet]
-        public ActionResult Details(int? photoId)
+        public ActionResult Details(int id)
         {
             Session["RatingFieldSortDir"] = true;
-            Photo photo = DB.Photos.Find(photoId);
+            Photo photo = DB.Photos.Find(id);
             if (photo != null)
-            {
-                return View("GetPhotoDetails", photo);
-            }
+                return View(photo);
             return RedirectToAction("Index");
+        }
+
+        public ActionResult GetPhotoDetails(int photoId, bool boolRefresh = false)
+        {
+            return View(DB.Photos.Find(photoId));
         }
 
         public ActionResult Edit(int id)
