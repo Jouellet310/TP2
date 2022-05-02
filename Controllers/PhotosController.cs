@@ -74,14 +74,10 @@ namespace UsersManager.Controllers
         }
 
         public ActionResult GetPhotoDetails(int photoId, bool forceRefresh = false)
-        {
-            if (forceRefresh || !IsPhotosUpToDate())
-            {
+        {  
                 var photo = DB.Photos.Find(photoId);
                 SetLocalPhotosSerialNumber();
-                return PartialView("GetPhotoDetails", photo);
-            }
-            return null;
+                return View(photo);
         }
         public ActionResult Create()
         {
@@ -112,6 +108,7 @@ namespace UsersManager.Controllers
         [HttpGet]
         public ActionResult Details(int? photoId)
         {
+            Session["RatingFieldSortDir"] = true;
             Photo photo = DB.Photos.Find(photoId);
             if (photo != null)
             {
@@ -149,6 +146,30 @@ namespace UsersManager.Controllers
             DB.Remove_Photo(id);
             RenewPhotosSerialNumber();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult UpdateCurrentUserRating(int photoId, int rating, string comment)
+        {
+            Photo photo = DB.Photos.Find(photoId);
+
+            PhotoRating photoRating = new PhotoRating {
+                PhotoId = photoId,
+                UserId = OnlineUsers.GetSessionUser().Id,
+                Rating = rating,
+                Comment = comment,
+                CreationDate = DateTime.Now
+            };
+
+            DB.AddPhotoRating(photoRating);
+
+            DB.Update_Photo_Ratings();
+            return View();
+        }
+        public ActionResult SortRatingsBy(string fieldToSort)
+        {
+            Session["RatingFieldToSort"] = fieldToSort;
+            Session["RatingFieldSortDir"] = !(bool)Session["RatingFieldToSort"];
+            return View();
         }
     }
 }
