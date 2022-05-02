@@ -115,6 +115,8 @@ namespace UsersManager.Models
                 DB.Users.Remove(userToDelete);
                 DB.SaveChanges();
                 DB.DeleteFriendShips(userId);
+                var photos = DB.Photos.Where(photo => photo.UserId == userId);
+                DB.Photos.RemoveRange(photos);
                 Commit();
                 return true;
             }
